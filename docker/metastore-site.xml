@@ -45,7 +45,7 @@ likely need to add a number of new values. -->
 
   <property>
     <name>javax.jdo.option.ConnectionURL</name>
-    <value>jdbc:postgresql://localhost:5432/hivems</value>
+    <value>jdbc:postgresql://postgresql:5432/hivems</value>
   </property>
 
   <property>
@@ -81,7 +81,7 @@ likely need to add a number of new values. -->
   </property>
   <property>
     <name>fs.s3a.endpoint</name>
-    <value>http://localhost:9000</value>
+    <value>http://minio:9000</value>
   </property>
   <property>
     <name>fs.s3a.path.style.access</name>

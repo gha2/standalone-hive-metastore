@@ -1,3 +1,5 @@
 /standalone-hive-metastore.iml
 /.idea/
 
+.DS_Store
+/.project
