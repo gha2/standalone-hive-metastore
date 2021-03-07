@@ -31,10 +31,6 @@ services:
       - 9000:9000
     command: server /data
 
-  metastore:
-    image: hive-metastore
-    ports:
-      - 9083:9083
 
 volumes:
   hivems_dbdata:
