@@ -1,6 +1,5 @@
 
-hive-metastore-3.0.0/*
-!hive-metastore-3.0.0/conf
+apache-hive-metastore-3.0.0-bin
 
 hadoop-3.2.0/*
 !hadoop-3.2.0/etc
