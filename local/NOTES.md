@@ -15,12 +15,9 @@ mv *.tar.gz archives/
 wget https://jdbc.postgresql.org/download/postgresql-42.2.19.jar
 mv postgresql-42.2.19.jar apache-hive-metastore-3.0.0-bin/lib/
 
-
 docker-compose up -d
 
-mc mb local/spark
-
-./metatsore .sh
+./metatsore.sh
 
 # Tricks
 

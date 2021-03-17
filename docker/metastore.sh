@@ -10,19 +10,40 @@ if [ -z "${S3_ENDPOINT}" ]; then echo "S3_ENDPOINT env variable must be defined!
 if [ -z "${S3_ACCESS_KEY}" ]; then echo "S3_ACCESS_KEY env variable must be defined!"; exit 1; fi
 if [ -z "${S3_SECRET_KEY}" ]; then echo "S3_SECRET_KEY env variable must be defined!"; exit 1; fi
 
-
-
-if [ -z "${JAVA_HOME}" ]
-then
-  export JAVA_HOME=/usr/local/openjdk-8
-fi
-if [ -z "${BASEDIR}" ]
-then
-  export BASEDIR=/opt
-fi
+if [ -z "${JAVA_HOME}" ]; then export JAVA_HOME=/usr/local/openjdk-8; fi
+if [ -z "${BASEDIR}" ]; then export BASEDIR=/opt; fi
+if [ -z "${LOG_LEVEL}" ]; then export LOG_LEVEL=INFO; fi
 
 export HADOOP_HOME=${BASEDIR}/hadoop-3.2.0
 export HADOOP_CLASSPATH=${HADOOP_HOME}/share/hadoop/tools/lib/aws-java-sdk-bundle-1.11.375.jar:${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-aws-3.2.0.jar
+
+cat >${BASEDIR}/apache-hive-metastore-3.0.0-bin/conf/metastore-log4j2.properties <<-EOF
+status = INFO
+name = MetastoreLog4j2
+packages = org.apache.hadoop.hive.metastore
+# list of all appenders
+appenders = console
+# console appender
+appender.console.type = Console
+appender.console.name = console
+appender.console.target = SYSTEM_ERR
+appender.console.layout.type = PatternLayout
+appender.console.layout.pattern = %d{ISO8601} %5p [%t] %c{2}: %m%n
+# list of all loggers
+loggers = DataNucleus, Datastore, JPOX, PerfLogger
+logger.DataNucleus.name = DataNucleus
+logger.DataNucleus.level = ERROR
+logger.Datastore.name = Datastore
+logger.Datastore.level = ERROR
+logger.JPOX.name = JPOX
+logger.JPOX.level = ERROR
+logger.PerfLogger.name = org.apache.hadoop.hive.ql.log.PerfLogger
+logger.PerfLogger.level = INFO
+# root logger
+rootLogger.level = ${LOG_LEVEL}
+rootLogger.appenderRefs = root
+rootLogger.appenderRef.root.ref = console
+EOF
 
 cat >${BASEDIR}/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml <<-EOF
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -103,6 +124,7 @@ EOSQL
 fi
 unset PGPASSWORD
 
+export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Dcom.amazonaws.sdk.disableCertChecking=true"
 
 ${BASEDIR}/apache-hive-metastore-3.0.0-bin/bin/start-metastore
 
