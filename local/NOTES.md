@@ -4,7 +4,8 @@ cd local
 wget https://www-us.apache.org/dist/hive/hive-standalone-metastore-3.0.0/hive-standalone-metastore-3.0.0-bin.tar.gz
 tar xvzf hive-standalone-metastore-3.0.0-bin.tar.gz
 
-wget https://apache.mediamirrors.org/hadoop/common/hadoop-3.2.0/hadoop-3.2.0.tar.gz # Now, not working. Need to manually fetch old release
+#wget https://apache.mediamirrors.org/hadoop/common/hadoop-3.2.0/hadoop-3.2.0.tar.gz # Now, not working. Need to manually fetch old release
+wget https://archive.apache.org/dist/hadoop/common/hadoop-3.2.0/hadoop-3.2.0.tar.gz
 tar xvzf hadoop-3.2.0.tar.gz
 rm hadoop-3.2.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar
 

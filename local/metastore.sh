@@ -9,8 +9,8 @@ export BASEDIR=${MYDIR}
 export POSTGRES_PASSWORD=postgres
 export HIVEMS_PASSWORD=hivems
 export HIVEMS_ENCRYPTED_PASSWORD=md54507e4128ef7e8b157fa8aeb399035f0
-export POSTGRES_HOST=localhost
-export POSTGRES_PORT=5432
+export POSTGRES_HOST=tcp1.shared1
+export POSTGRES_PORT=15432
 
 export LOG_LEVEL=INFO
 

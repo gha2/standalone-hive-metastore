@@ -13,6 +13,8 @@ if [ -z "${S3_SECRET_KEY}" ]; then echo "S3_SECRET_KEY env variable must be defi
 if [ -z "${JAVA_HOME}" ]; then export JAVA_HOME=/usr/local/openjdk-8; fi
 if [ -z "${BASEDIR}" ]; then export BASEDIR=/opt; fi
 if [ -z "${LOG_LEVEL}" ]; then export LOG_LEVEL=INFO; fi
+if [ -z "${THRIFT_LISTENING_PORT}" ]; then export THRIFT_LISTENING_PORT=9083; fi
+if [ -z "${S3_REQUEST_TIMEOUT}" ]; then export S3_REQUEST_TIMEOUT=0; fi
 
 export HADOOP_HOME=${BASEDIR}/hadoop-3.2.0
 export HADOOP_CLASSPATH=${HADOOP_HOME}/share/hadoop/tools/lib/aws-java-sdk-bundle-1.11.375.jar:${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-aws-3.2.0.jar
@@ -105,6 +107,10 @@ cat >${BASEDIR}/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml <<-EOF
     <name>fs.s3a.path.style.access</name>
     <value>true</value>
   </property>
+  <property>
+    <name>fs.s3a.connection.request.timeout</name>
+    <value>${S3_REQUEST_TIMEOUT}</value>
+  </property>
 </configuration>
 EOF
 
@@ -126,5 +132,20 @@ unset PGPASSWORD
 
 export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Dcom.amazonaws.sdk.disableCertChecking=true"
 
-${BASEDIR}/apache-hive-metastore-3.0.0-bin/bin/start-metastore
+# WARNING: This variable is set by Kubernetes in a form: tcp://XX.XX.XX.XX:9083.
+# For the metastore, this is an entry variable hosting only the listening port, as a single number. So failure.
+unset METASTORE_PORT
+
+${BASEDIR}/apache-hive-metastore-3.0.0-bin/bin/start-metastore -p $THRIFT_LISTENING_PORT
+err=$?
+
+if [ -n "$WAIT_ON_ERROR" ]; then
+  if [ $err -ne 0 ]; then
+    echo "ERROR: rc=$err. Will wait $WAIT_ON_ERROR sec...."
+    sleep $WAIT_ON_ERROR
+  fi
+fi
+
+return $err
+
 

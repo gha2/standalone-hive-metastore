@@ -14,7 +14,7 @@ RUN curl -L https://downloads.apache.org/hive/hive-standalone-metastore-${METAST
 
 RUN curl -L https://jdbc.postgresql.org/download/postgresql-42.2.19.jar -o /opt/apache-hive-metastore-${METASTORE_VERSION}-bin/lib/postgresql-42.2.19.jar
 
-RUN apt-get update && apt-get install -y postgresql-client && apt-get clean
+RUN apt-get update && apt-get install -y postgresql-client sudo && apt-get clean
 
 COPY metastore.sh /metastore.sh
 
@@ -22,6 +22,9 @@ RUN groupadd -r hive --gid=1000 && \
     useradd -r -g hive --uid=1000 -d ${HIVE_HOME} hive && \
     chown hive:hive -R ${HIVE_HOME} && \
     chown hive:hive /metastore.sh && chmod +x /metastore.sh
+
+# Security breach, but must be in a namespace with relaxed psp to be able to sudo
+COPY hive.sudoer /etc/sudoers.d/hive
 
 USER hive
 EXPOSE 9083
